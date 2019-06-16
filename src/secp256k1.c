@@ -457,7 +457,7 @@ int secp256k1_ecdsa_anti_nonce_sidechan_client_commit(
     secp256k1_scalar k;
     secp256k1_gej rj;
     secp256k1_ge r;
-
+    unsigned int count = 0;
     VERIFY_CHECK(ctx != NULL);
     ARG_CHECK(secp256k1_ecmult_gen_context_is_built(&ctx->ecmult_gen_ctx));
     ARG_CHECK(client_commit != NULL);
@@ -466,13 +466,17 @@ int secp256k1_ecdsa_anti_nonce_sidechan_client_commit(
     ARG_CHECK(rand_commitment32 != NULL);
 
 
-    if (!secp256k1_nonce_function_default(nonce32, msg32, seckey32, NULL, rand_commitment32, 0)) {
-        return 0;
-    }
+    while (1) {
+        int overflow = 0;
+        if (!secp256k1_nonce_function_default(nonce32, msg32, seckey32, NULL, rand_commitment32, count)) {
+            return 0;
+        }
 
-    secp256k1_scalar_set_b32(&k, nonce32, NULL);
-    if (secp256k1_scalar_is_zero(&k)) {
-        return 0;
+        secp256k1_scalar_set_b32(&k, nonce32, &overflow);
+        if (!overflow && !secp256k1_scalar_is_zero(&k)) {
+            break;
+        }
+        count++;
     }
 
     secp256k1_ecmult_gen(&ctx->ecmult_gen_ctx, &rj, &k);
