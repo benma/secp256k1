@@ -38,11 +38,11 @@ int secp256k1_schnorrsig_s2c_opening_parse(const secp256k1_context* ctx, secp256
     ARG_CHECK(opening != NULL);
     ARG_CHECK(input33 != NULL);
 
-    secp256k1_schnorrsig_s2c_opening_init(opening);
     /* Return 0 if unknown bits are set */
     if ((input33[0] & ~0x06) != 0) {
         return 0;
     }
+    secp256k1_schnorrsig_s2c_opening_init(opening);
     /* Read nonce_is_negated bit */
     opening->nonce_is_negated = input33[0] & (1 << 2);
     memcpy(pk_ser, input33, sizeof(pk_ser));
