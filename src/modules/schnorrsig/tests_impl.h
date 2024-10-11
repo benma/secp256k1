@@ -1010,7 +1010,7 @@ void test_s2c_opening(void) {
          * points' x-coordinates are uniformly random */
         if (secp256k1_schnorrsig_s2c_opening_parse(CTX, &opening, input) == 1) {
             CHECK(secp256k1_schnorrsig_s2c_opening_serialize(CTX, output, &opening) == 1);
-
+            /*CHECK(memcmp(output, input, sizeof(output)) == 0);*/
         }
         testrand256(&input[1]);
         /* Set pubkey oddness tag to first bit of input[1] */
