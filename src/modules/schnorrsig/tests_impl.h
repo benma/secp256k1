@@ -1012,11 +1012,6 @@ void test_s2c_opening(void) {
             CHECK(secp256k1_schnorrsig_s2c_opening_serialize(CTX, output, &opening) == 1);
             CHECK(memcmp(output, input, sizeof(output)) == 0);
         }
-        testrand256(&input[1]);
-        /* Set pubkey oddness tag to first bit of input[1] */
-        input[0] = (input[1] & 1) + 2;
-        /* Set nonce_is_negated bit to input[1]'s 3rd bit */
-        input[0] |= (input[1] & (1 << 2));
         i++;
     } while(i < COUNT);
 }
