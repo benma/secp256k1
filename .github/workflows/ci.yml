@@ -12,6 +12,7 @@ concurrency:
   cancel-in-progress: true
 
 env:
+  VERBOSE: 1
   ### compiler options
   HOST:
   WRAPPER_CMD:
