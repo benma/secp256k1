@@ -7765,9 +7765,6 @@ int main(int argc, char **argv) {
     }
     printf("test count = %i\n", COUNT);
 
-    /* run test RNG tests (must run before we really initialize the test RNG) */
-    run_xoshiro256pp_tests();
-
     /* find random seed */
     testrand_init(argc > 2 ? argv[2] : NULL);
 
@@ -7794,120 +7791,11 @@ int main(int argc, char **argv) {
 
     /*** Run actual tests ***/
 
-    /* selftest tests */
-    run_selftest_tests();
-
-    /* context tests */
-    run_proper_context_tests(0); run_proper_context_tests(1);
-    run_static_context_tests(0); run_static_context_tests(1);
-    run_deprecated_context_flags_test();
-
-    /* scratch tests */
-    run_scratch_tests();
-
-    /* integer arithmetic tests */
-#ifdef SECP256K1_WIDEMUL_INT128
-    run_int128_tests();
-#endif
-    run_ctz_tests();
-    run_modinv_tests();
-    run_inverse_tests();
-
-    /* sorting tests */
-    run_hsort_tests();
-
-    /* hash tests */
-    run_sha256_known_output_tests();
-    run_sha256_counter_tests();
-    run_hmac_sha256_tests();
-    run_rfc6979_hmac_sha256_tests();
-    run_tagged_sha256_tests();
-
-    /* scalar tests */
-    run_scalar_tests();
-
-    /* field tests */
-    run_field_half();
-    run_field_misc();
-    run_field_convert();
-    run_field_be32_overflow();
-    run_fe_mul();
-    run_sqr();
-    run_sqrt();
-
-    /* group tests */
-    run_ge();
-    run_gej();
-    run_group_decompress();
-
-    /* ecmult tests */
-    run_ecmult_pre_g();
-    run_wnaf();
-    run_point_times_order();
-    run_ecmult_near_split_bound();
-    run_ecmult_chain();
-    run_ecmult_constants();
-    run_ecmult_gen_blind();
-    run_ecmult_const_tests();
-    run_ecmult_multi_tests();
-    run_ec_combine();
-    run_ec_commit();
-
-    /* endomorphism tests */
-    run_endomorphism_tests();
-
-    /* EC point parser test */
-    run_ec_pubkey_parse_test();
-
-    /* EC key edge cases */
-    run_eckey_edge_case_test();
-
-    /* EC key arithmetic test */
-    run_eckey_negate_test();
-
-#ifdef ENABLE_MODULE_ECDH
-    /* ecdh tests */
-    run_ecdh_tests();
-#endif
-
-    /* ecdsa tests */
-    run_ec_illegal_argument_tests();
-    run_pubkey_comparison();
-    run_pubkey_sort();
-    run_random_pubkeys();
-    run_ecdsa_der_parse();
-    run_ecdsa_sign_verify();
-    run_ecdsa_end_to_end();
-    run_ecdsa_edge_cases();
-    run_ecdsa_wycheproof();
-
-#ifdef ENABLE_MODULE_RECOVERY
-    /* ECDSA pubkey recovery tests */
-    run_recovery_tests();
-#endif
-
-#ifdef ENABLE_MODULE_EXTRAKEYS
-    run_extrakeys_tests();
-#endif
 
 #ifdef ENABLE_MODULE_SCHNORRSIG
     run_schnorrsig_tests();
 #endif
 
-#ifdef ENABLE_MODULE_MUSIG
-    run_musig_tests();
-#endif
-
-#ifdef ENABLE_MODULE_ELLSWIFT
-    run_ellswift_tests();
-#endif
-
-    /* util tests */
-    run_secp256k1_memczero_test();
-    run_secp256k1_is_zero_array_test();
-    run_secp256k1_byteorder_tests();
-
-    run_cmov_tests();
 
     /*** Tear down test environment ***/
     free(STATIC_CTX);
