@@ -966,6 +966,7 @@ static void test_schnorrsig_taproot(void) {
 }
 
 void test_s2c_opening(void) {
+    int i = 0;
     unsigned char output[33];
     /* First byte 0x06 means that nonce_is_negated and EVEN tag for the
      * following compressed pubkey (which is valid). */
@@ -988,6 +989,36 @@ void test_s2c_opening(void) {
     CHECK(secp256k1_schnorrsig_s2c_opening_serialize(CTX, output, &opening) == 1);
     CHECK(secp256k1_schnorrsig_s2c_opening_parse(CTX, &opening, input) == 1);
 
+    {
+        /* Invalid pubkey makes parsing fail */
+        unsigned char input_tmp[33];
+        memcpy(input_tmp, input, sizeof(input_tmp));
+        /* Pubkey oddness tag is invalid */
+        input_tmp[0] = 0;
+        CHECK(secp256k1_schnorrsig_s2c_opening_parse(CTX, &opening, input_tmp) == 0);
+        /* nonce_is_negated bit is set but pubkey oddness tag is invalid */
+        input_tmp[0] = 5;
+        CHECK(secp256k1_schnorrsig_s2c_opening_parse(CTX, &opening, input_tmp) == 0);
+        /* Unknown bit is set */
+        input_tmp[0] = 8;
+        CHECK(secp256k1_schnorrsig_s2c_opening_parse(CTX, &opening, input_tmp) == 0);
+    }
+
+    /* Try parsing and serializing a bunch of openings */
+    do {
+        /* This is expected to fail in about 50% of iterations because the
+         * points' x-coordinates are uniformly random */
+        if (secp256k1_schnorrsig_s2c_opening_parse(CTX, &opening, input) == 1) {
+            CHECK(secp256k1_schnorrsig_s2c_opening_serialize(CTX, output, &opening) == 1);
+            CHECK(memcmp(output, input, sizeof(output)) == 0);
+        }
+        testrand256(&input[1]);
+        /* Set pubkey oddness tag to first bit of input[1] */
+        input[0] = (input[1] & 1) + 2;
+        /* Set nonce_is_negated bit to input[1]'s 3rd bit */
+        input[0] |= (input[1] & (1 << 2));
+        i++;
+    } while(i < COUNT);
 }
 
 void run_schnorrsig_tests(void) {
