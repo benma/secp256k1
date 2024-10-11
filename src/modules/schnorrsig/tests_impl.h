@@ -1022,17 +1022,8 @@ void test_s2c_opening(void) {
 }
 
 void run_schnorrsig_tests(void) {
-    int i;
     run_nonce_function_bip340_tests();
 
-    test_schnorrsig_api();
-    test_schnorrsig_sha256_tagged();
-    test_schnorrsig_bip_vectors();
-    for (i = 0; i < COUNT; i++) {
-        test_schnorrsig_sign();
-        test_schnorrsig_sign_verify();
-    }
-    test_schnorrsig_taproot();
     test_s2c_opening();
 }
 

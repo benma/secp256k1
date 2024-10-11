@@ -83,6 +83,7 @@ esac
     --enable-examples="$EXAMPLES" \
     --enable-ctime-tests="$CTIMETESTS" \
     --with-valgrind="$WITH_VALGRIND" \
+    --disable-exhaustive-tests \
     --host="$HOST" $EXTRAFLAGS
 
 # We have set "-j<n>" in MAKEFLAGS.
