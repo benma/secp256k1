@@ -165,19 +165,14 @@ static void bench_ecmult_1p_g_teardown(void* arg, int iters) {
 }
 
 static void run_ecmult_bench(bench_data* data, int iters) {
-    char str[32];
-    sprintf(str, "ecmult_gen");
+    char* str = "foo";
     run_benchmark(str, bench_ecmult_gen, bench_ecmult_setup, bench_ecmult_gen_teardown, data, 10, iters);
-    sprintf(str, "ecmult_const");
     run_benchmark(str, bench_ecmult_const, bench_ecmult_setup, bench_ecmult_const_teardown, data, 10, iters);
     /* ecmult with non generator point */
-    sprintf(str, "ecmult_1p");
     run_benchmark(str, bench_ecmult_1p, bench_ecmult_setup, bench_ecmult_1p_teardown, data, 10, iters);
     /* ecmult with generator point */
-    sprintf(str, "ecmult_0p_g");
     run_benchmark(str, bench_ecmult_0p_g, bench_ecmult_setup, bench_ecmult_0p_g_teardown, data, 10, iters);
     /* ecmult with generator and non-generator point. The reported time is per point. */
-    sprintf(str, "ecmult_1p_g");
     run_benchmark(str, bench_ecmult_1p_g, bench_ecmult_setup, bench_ecmult_1p_g_teardown, data, 10, 2*iters);
 }
 
@@ -243,7 +238,7 @@ static void generate_scalar(uint32_t num, secp256k1_scalar* scalar) {
 }
 
 static void run_ecmult_multi_bench(bench_data* data, size_t count, int includes_g, int num_iters) {
-    char str[32];
+    char* str = "foo";
     size_t iters = 1 + num_iters / count;
     size_t iter;
 
@@ -265,11 +260,6 @@ static void run_ecmult_multi_bench(bench_data* data, size_t count, int includes_
     }
 
     /* Run the benchmark. */
-    if (includes_g) {
-        sprintf(str, "ecmult_multi_%ip_g", (int)count - 1);
-    } else {
-        sprintf(str, "ecmult_multi_%ip", (int)count);
-    }
     run_benchmark(str, bench_ecmult_multi, bench_ecmult_multi_setup, bench_ecmult_multi_teardown, data, 10, count * iters);
 }
 
